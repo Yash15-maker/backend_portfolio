@@ -16,21 +16,23 @@ let transporter = nodemailer.createTransport({
 
 export const sendEmail = expressAsyncHandler(async (req, res) => {
   const { email, name, message } = req.body;
-  console.log(email, message);
+  console.log(email, name, message);
   try {
     var mailOptions = {
       from: process.env.SMTP_MAIL,
       to: email,
-      // subject: subject,
+      name: name,
+      subject: `Hii ${name} received the message`,
       text: message,
     };
 
     transporter.sendMail(mailOptions, function (error, info) {
       if (error) {
-        console.log(error.message);
-        // throw new Error("Sorry bhaji");
+        console.log("Email not send successfully!");
+        res.send({ message: "UnSuccessfully" });
       } else {
-        res.send({ message: "Email sent successfully!" });
+        console.log("Email send successfully!");
+        res.send({ message: "Successfully" });
       }
     });
   } catch (error) {
