@@ -1,5 +1,6 @@
 import expressAsyncHandler from "express-async-handler";
 import dotenv from "dotenv";
+import fs from "fs";
 import nodemailer from "nodemailer";
 
 dotenv.config();
@@ -23,9 +24,9 @@ export const sendEmail = expressAsyncHandler(async (req, res) => {
       to: email,
       name: name,
       subject: `Hii ${name} received the message`,
-      text: message,
+      text: `Hi ${name}, Thanks for contacting with me! This automatic reply is just to let you know that i received your message and i will get back to you with a response as quickly as possible.`,
     };
-
+    saveRequestBodyToJson(req.body);
     transporter.sendMail(mailOptions, function (error, info) {
       if (error) {
         console.log("Email not send successfully!");
@@ -40,3 +41,10 @@ export const sendEmail = expressAsyncHandler(async (req, res) => {
     res.send({ message: error.message });
   }
 });
+
+function saveRequestBodyToJson(body) {
+  const jsonFilePath = "../data.json";
+
+  fs.writeFileSync(jsonFilePath, JSON.stringify(body), "utf-8");
+  console.log("Request body saved as JSON:", jsonFilePath);
+}
